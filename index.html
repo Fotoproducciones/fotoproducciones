@@ -220,7 +220,6 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
   <div class="portal-content">
     <div class="page-header"><h2>Solicitud de Foto Memorial</h2><p>Complete los campos para registrar la solicitud</p></div>
 
-    <!-- DATOS DEL FINADO -->
     <div class="form-card">
       <div class="card-label">Datos del Finado</div>
       <div class="extractor-zone">
@@ -235,18 +234,15 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
       </div>
     </div>
 
-    <!-- DETALLES DEL PEDIDO -->
     <div class="form-card">
       <div class="card-label">Detalles del Pedido</div>
 
-      <!-- Urgente -->
       <div class="urgent-box" id="urgent-box" onclick="toggleUrgent()">
         <input type="checkbox" id="f-urgente" style="display:none">
         <div class="urgent-dot"></div>
         <div class="urgent-text"><strong>&#9876; Urgente</strong><span>Desactiva fecha y hora de entrega</span></div>
       </div>
 
-      <!-- Fecha de entrega + Hora -->
       <div class="frow c2" style="margin-top:12px;">
         <div class="field">
           <label>Fecha de entrega</label>
@@ -259,7 +255,6 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
         </div>
       </div>
 
-      <!-- Núm identificación opcional -->
       <div class="frow c1">
         <div class="field">
           <label>Número de identificación <span style="font-weight:300;opacity:.6">(opcional)</span></label>
@@ -267,10 +262,8 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
         </div>
       </div>
 
-      <!-- Persona que solicita -->
       <div class="frow c1"><div class="field"><label>Persona que solicita</label><input type="text" id="f-solicitante" placeholder="Nombre de quien hace el pedido"></div></div>
 
-      <!-- Foto -->
       <div class="frow c1">
         <div class="field">
           <label>Foto adjunta</label>
@@ -283,7 +276,6 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
         </div>
       </div>
 
-      <!-- Especificaciones (incluye logo) -->
       <div class="frow c1">
         <div class="field">
           <label>Especificaciones de edición</label>
@@ -291,7 +283,6 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
         </div>
       </div>
 
-      <!-- Destino -->
       <div class="frow c1"><div class="field"><label>Destino de entrega</label><select id="f-destino"><option value="" disabled selected>Seleccionar destino...</option></select></div></div>
     </div>
 
@@ -348,7 +339,6 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box"><p>¿Eliminar este pedido permanentemente?</p><div class="confirm-actions"><button class="confirm-cancel" onclick="closeConfirm()">Cancelar</button><button class="confirm-ok" onclick="confirmDelete()">Eliminar</button></div></div>
 </div>
-<!-- RECIBO -->
 <div id="receipt-print">
   <div class="receipt-wrap" id="receipt-wrap">
     <img id="receipt-img" src="" alt="recibo">
@@ -430,7 +420,6 @@ async function extractData(){
     if(btn){btn.disabled=false;btn.textContent='Acomodar datos';}
   }
 }
-
 function extractByPatterns(){
   const text=$('paste-text').value.trim();
   if(!text){showExtractStatus('No se pudo conectar con IA. Pega el texto de nuevo.',true);return;}
@@ -507,7 +496,6 @@ function renderAdmin(){renderStats();renderCalendar();renderRows();}
 function renderStats(){const total=orders.length,pend=orders.filter(o=>!o.completado).length,urg=orders.filter(o=>o.urgente&&!o.completado).length;$('a-stats').innerHTML=`<div class="stat-box"><div class="val">${total}</div><div class="lbl">Total pedidos</div></div><div class="stat-box"><div class="val">${pend}</div><div class="lbl">Pendientes</div></div><div class="stat-box"><div class="val">${urg}</div><div class="lbl">Urgentes activos</div></div>`;}
 function filteredOrders(){
   let r=[...orders];
-  // Filter by selected day or current week
   if(selectedDay){
     r=r.filter(o=>(o.createdAt||'').substring(0,10)===selectedDay);
   } else {
@@ -521,7 +509,56 @@ function filteredOrders(){
   return r.sort((a,b)=>{if(a.completado!==b.completado)return a.completado?1:-1;return(b.urgente?1:0)-(a.urgente?1:0);});
 }
 function shortClient(n){return n.replace('Latinoamericana','Latin.').replace('San Javier','S.Javier');}
-function renderRows(){const tbody=$('a-tbody'),empty=$('a-empty'),table=$('a-table');const list=filteredOrders();if(!list.length){tbody.innerHTML='';table.style.display='none';empty.style.display='block';return;}table.style.display='';empty.style.display='none';tbody.innerHTML=list.map(o=>`<div class="exp-row ${o.urgente?'urow':''} ${o.completado?'done':''}" id="row-${o._docId}"><div class="exp-row-main" style="grid-template-columns:32px 40px 1fr 90px 72px 72px 52px 70px" onclick="toggleRow('${o._docId}')"><div class="chevron">&rsaquo;</div><div>${o.foto?`<img src="${o.foto}" style="width:34px;height:34px;object-fit:cover;border:1px solid var(--border);">`:`<div style="width:34px;height:34px;background:var(--bg2);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink-dim);font-size:13px;">&#9675;</div>`}</div><div><div class="exp-name">${o.nombre}</div><div class="exp-sub">${o.serie||'S/N'} &middot; ${o.destino||'—'}</div></div><div class="exp-sub">${o.solicitante||'—'}</div><div class="exp-sub">${o.horaSol||'—'}</div><div class="exp-sub">${o.urgente?'—':o.horaEntrega||'—'}</div><div><span class="${o.urgente?'tag-u':'tag-n'}">${o.urgente?'URG':'—'}</span></div><div><button class="done-btn ${o.completado?'active':''}" onclick="event.stopPropagation();toggleDone('${o._docId}',${!!o.completado})">${o.completado?'✓ Listo':'Marcar listo'}</button></div></div><div class="exp-detail"><div class="exp-detail-top">${o.foto?`<img class="exp-detail-photo" src="${o.foto}" onclick="openLb('${o.foto}')">`:`<div class="exp-detail-nophoto">&#9675;</div>`}<div><div style="font-size:11px;color:var(--ink-dim);margin-bottom:8px">${o.cname}</div><div class="exp-detail-actions"><button class="act-btn" onclick="openEdit('${o._docId}')">&#9998; Editar</button><button class="act-btn del" onclick="deleteOrder('${o._docId}')">&#10005; Eliminar</button></div></div></div><div class="exp-sec">Datos del Finado</div><div class="exp-dg c3"><div class="edf"><div class="l">Nacimiento</div><div class="v">${o.nac||'—'}</div></div><div class="edf"><div class="l">Defunción</div><div class="v">${o.def||'—'}</div></div><div class="edf"><div class="l">Velación</div><div class="v">${o.vel||'—'}</div></div></div><div class="exp-dg c1"><div class="edf"><div class="l">Especificaciones de edición</div><div class="v">${o.caract||'—'}</div></div></div><div class="exp-dg"><div class="edf"><div class="l">Persona que solicita</div><div class="v">${o.solicitante||'—'}</div></div><div class="edf"><div class="l">Sin logo funeraria</div><div class="v">${o.nologo?'Sí — sin logo':'No'}</div></div><div class="edf"><div class="l">H. Entrega</div><div class="v">${o.urgente?'Urgente':o.horaEntrega||'—'}</div></div><div class="edf"><div class="l">H. Solicitada</div><div class="v">${o.horaSol||'—'}</div></div></div><div class="exp-sec">Control Interno</div><div class="exp-dg c3"><div class="edf gold"><div class="l">Diseñador</div><div class="v"><input class="inline-inp" type="text" placeholder="—" value="${o.disenio||''}" onchange="updateField('${o._docId}','disenio',this.value)"></div></div><div class="edf gold"><div class="l">Quien entrega</div><div class="v"><input class="inline-inp" type="text" placeholder="Nombre..." value="${o.quien||''}" onchange="updateField('${o._docId}','quien',this.value)"></div></div></div></div></div>`).join('');}
+function renderRows(){
+  const tbody=$('a-tbody'),empty=$('a-empty'),table=$('a-table');
+  const list=filteredOrders();
+  if(!list.length){tbody.innerHTML='';table.style.display='none';empty.style.display='block';return;}
+  table.style.display='';empty.style.display='none';
+  tbody.innerHTML=list.map(o=>`
+<div class="exp-row ${o.urgente?'urow':''} ${o.completado?'done':''}" id="row-${o._docId}">
+  <div class="exp-row-main" style="grid-template-columns:32px 40px 1fr 90px 72px 72px 52px 70px" onclick="toggleRow('${o._docId}')">
+    <div class="chevron">&rsaquo;</div>
+    <div>${o.foto?`<img src="${o.foto}" style="width:34px;height:34px;object-fit:cover;border:1px solid var(--border);">`:`<div style="width:34px;height:34px;background:var(--bg2);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink-dim);font-size:13px;">&#9675;</div>`}</div>
+    <div><div class="exp-name">${o.nombre}</div><div class="exp-sub">${o.serie||'S/N'} &middot; ${o.destino||'—'}</div></div>
+    <div class="exp-sub">${o.solicitante||'—'}</div>
+    <div class="exp-sub">${o.horaSol||'—'}</div>
+    <div class="exp-sub">${o.urgente?'—':o.horaEntrega||'—'}</div>
+    <div><span class="${o.urgente?'tag-u':'tag-n'}">${o.urgente?'URG':'—'}</span></div>
+    <div><button class="done-btn ${o.completado?'active':''}" onclick="event.stopPropagation();toggleDone('${o._docId}',${!!o.completado})">${o.completado?'✓ Listo':'Marcar listo'}</button></div>
+  </div>
+  <div class="exp-detail">
+    <div class="exp-detail-top">
+      ${o.foto?`<img class="exp-detail-photo" src="${o.foto}" onclick="openLb('${o.foto}')">`:`<div class="exp-detail-nophoto">&#9675;</div>`}
+      <div>
+        <div style="font-size:11px;color:var(--ink-dim);margin-bottom:8px">${o.cname}</div>
+        <div class="exp-detail-actions">
+          <button class="act-btn" onclick="openEdit('${o._docId}')">&#9998; Editar</button>
+          <button class="act-btn" onclick="openReceipt('${o._docId}')">&#128203; Recibo</button>
+          <button class="act-btn del" onclick="deleteOrder('${o._docId}')">&#10005; Eliminar</button>
+        </div>
+      </div>
+    </div>
+    <div class="exp-sec">Datos del Finado</div>
+    <div class="exp-dg c3">
+      <div class="edf"><div class="l">Nacimiento</div><div class="v">${o.nac||'—'}</div></div>
+      <div class="edf"><div class="l">Defunción</div><div class="v">${o.def||'—'}</div></div>
+      <div class="edf"><div class="l">Velación</div><div class="v">${o.vel||'—'}</div></div>
+    </div>
+    <div class="exp-dg c1"><div class="edf"><div class="l">Especificaciones de edición</div><div class="v">${o.caract||'—'}</div></div></div>
+    <div class="exp-dg">
+      <div class="edf"><div class="l">Persona que solicita</div><div class="v">${o.solicitante||'—'}</div></div>
+      <div class="edf"><div class="l">Sin logo funeraria</div><div class="v">${o.nologo?'Sí — sin logo':'No'}</div></div>
+      <div class="edf"><div class="l">H. Entrega</div><div class="v">${o.urgente?'Urgente':o.horaEntrega||'—'}</div></div>
+      <div class="edf"><div class="l">H. Solicitada</div><div class="v">${o.horaSol||'—'}</div></div>
+    </div>
+    <div class="exp-sec">Control Interno</div>
+    <div class="exp-dg c3">
+      <div class="edf gold"><div class="l">Diseñador</div><div class="v"><input class="inline-inp" type="text" placeholder="—" value="${o.disenio||''}" onchange="updateField('${o._docId}','disenio',this.value)"></div></div>
+      <div class="edf gold"><div class="l">Quien entrega</div><div class="v"><input class="inline-inp" type="text" placeholder="Nombre..." value="${o.quien||''}" onchange="updateField('${o._docId}','quien',this.value)"></div></div>
+    </div>
+  </div>
+</div>`).join('');
+}
 function toggleRow(id){const row=document.getElementById('row-'+id);if(row)row.classList.toggle('open');}
 async function toggleDone(docId,current){const o=orders.find(x=>x._docId===docId);if(o){o.completado=!current;renderStats();}try{await updateDoc(doc(db,'pedidos',docId),{completado:!current});}catch(e){if(o)o.completado=current;renderStats();console.error(e);}}
 async function updateField(docId,field,val){try{await updateDoc(doc(db,'pedidos',docId),{[field]:val});}catch(e){console.error('Error:',e);}}
@@ -530,18 +567,16 @@ function closeConfirm(){$('confirm-overlay').classList.remove('open');_pendingDe
 async function confirmDelete(){const id=_pendingDeleteId;closeConfirm();if(!id)return;try{await deleteDoc(doc(db,'pedidos',id));}catch(e){console.error('Error eliminando:',e);}}
 function openEdit(id){editId=id;const o=orders.find(x=>x._docId===id);if(!o)return;$('m-nombre').value=o.nombre;$('m-serie').value=o.serie||'';$('m-nac').value=o.nac||'';$('m-def').value=o.def||'';$('m-vel').value=o.vel||'';$('m-caract').value=o.caract||'';$('m-destino').value=o.destino||'';$('m-hent').value=o.horaEntrega||'';$('m-disenio').value=o.disenio||'';$('m-quien').value=o.quien||'';$('m-solicitante').value=o.solicitante||'';$('m-nologo').value=o.nologo?'true':'false';$('modal-overlay').classList.add('open');}
 function closeModal(){$('modal-overlay').classList.remove('open');editId=null;}
-async function saveEdit(){const o=orders.find(x=>x._docId===editId);if(!o||!o._docId)return;const updates={nombre:$('m-nombre').value,serie:$('m-serie').value,nac:$('m-nac').value,def:$('m-def').value,vel:$('m-vel').value,caract:$('m-caract').value,destino:$('m-destino').value,horaEntrega:$('m-hent').value,solicitante:$('m-solicitante').value,nologo:$('m-nologo').value==='true',item:$('m-item').value,disenio:$('m-disenio').value,quien:$('m-quien').value};try{await updateDoc(doc(db,'pedidos',o._docId),updates);closeModal();}catch(e){console.error('Error guardando:',e);}}
+async function saveEdit(){const o=orders.find(x=>x._docId===editId);if(!o||!o._docId)return;const updates={nombre:$('m-nombre').value,serie:$('m-serie').value,nac:$('m-nac').value,def:$('m-def').value,vel:$('m-vel').value,caract:$('m-caract').value,destino:$('m-destino').value,horaEntrega:$('m-hent').value,solicitante:$('m-solicitante').value,nologo:$('m-nologo').value==='true',disenio:$('m-disenio').value,quien:$('m-quien').value};try{await updateDoc(doc(db,'pedidos',o._docId),updates);closeModal();}catch(e){console.error('Error guardando:',e);}}
 function openLb(src){$('lb-img').src=src;$('lightbox').classList.add('open');}
-
 function getReceiptImage(cid){
-  const base='https://fotoproducciones.github.io/fotoproducciones/';
+  const base='https://santiagorl48.github.io/fotoproducciones/';
   if(cid==='10010'||cid==='10011') return base+'recibo-gayosso.jpg';
   if(cid&&cid.startsWith('1002')) return base+'recibo-latinoamericana.jpg';
   if(cid&&cid.startsWith('1003')) return base+'recibo-moreh.jpg';
   if(cid&&cid.startsWith('1004')) return base+'recibo-sanjavier.jpg';
   return base+'recibo-base.jpg';
 }
-
 function openReceipt(docId){
   const o=orders.find(x=>x._docId===docId);
   if(!o)return;
@@ -549,23 +584,15 @@ function openReceipt(docId){
   $('rf-nombre').textContent=o.nombre||'';
   $('rf-id').textContent=(o.serie&&o.serie!=='N/A')?o.serie:'';
   $('rf-lugar').textContent=o.destino||'';
-  // Format date: use vel date or today
   const dateStr=o.vel||o.createdAt?.substring(0,10)||'';
-  if(dateStr){
-    const [y,m,d]=dateStr.split('-');
-    $('rf-fecha').textContent=`${d}/${m}/${y}`;
-  } else {
-    $('rf-fecha').textContent='';
-  }
+  if(dateStr){const [y,m,d]=dateStr.split('-');$('rf-fecha').textContent=`${d}/${m}/${y}`;}
+  else{$('rf-fecha').textContent='';}
   $('receipt-print').classList.add('open');
 }
-
 function closeReceipt(){$('receipt-print').classList.remove('open');}
 function closeLb(){$('lightbox').classList.remove('open');}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-window.doLogin=doLogin;window.logout=logout;window.toggleUrgent=toggleUrgent;window.toggleSerie=toggleSerie;window.setTodayDefault=setTodayDefault;window.prevWeek=prevWeek;window.nextWeek=nextWeek;window.selectDay=selectDay;window.onVelacionChange=onVelacionChange;window.validateTime=validateTime;window.previewPhotos=previewPhotos;window.extractData=extractData;window.submitOrder=submitOrder;window.toggleRow=toggleRow;window.updateField=updateField;window.toggleDone=toggleDone;window.deleteOrder=deleteOrder;window.closeConfirm=closeConfirm;window.confirmDelete=confirmDelete;window.openEdit=openEdit;window.closeModal=closeModal;window.saveEdit=saveEdit;window.openLb=openLb;
-window.openReceipt=openReceipt;
-window.closeReceipt=closeReceipt;window.closeLb=closeLb;
+window.doLogin=doLogin;window.logout=logout;window.toggleUrgent=toggleUrgent;window.toggleSerie=toggleSerie;window.setTodayDefault=setTodayDefault;window.prevWeek=prevWeek;window.nextWeek=nextWeek;window.selectDay=selectDay;window.onVelacionChange=onVelacionChange;window.validateTime=validateTime;window.previewPhotos=previewPhotos;window.extractData=extractData;window.submitOrder=submitOrder;window.toggleRow=toggleRow;window.updateField=updateField;window.toggleDone=toggleDone;window.deleteOrder=deleteOrder;window.closeConfirm=closeConfirm;window.confirmDelete=confirmDelete;window.openEdit=openEdit;window.closeModal=closeModal;window.saveEdit=saveEdit;window.openLb=openLb;window.openReceipt=openReceipt;window.closeReceipt=closeReceipt;window.closeLb=closeLb;
 </script>
 </body>
 </html>
