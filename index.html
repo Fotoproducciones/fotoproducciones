@@ -178,10 +178,11 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
 .receipt-wrap{position:relative;width:100%;max-width:900px;}
 .receipt-wrap img{width:100%;display:block;}
 .receipt-fields{position:absolute;inset:0;}
-.rf-nombre{position:absolute;top:42%;left:10%;font-family:'Playfair Display',serif;font-size:1.4vw;color:#1a1714;width:50%;}
-.rf-id{position:absolute;top:38%;right:8%;font-family:'IBM Plex Mono',monospace;font-size:1.1vw;color:#1a1714;width:15%;text-align:center;}
-.rf-lugar{position:absolute;top:55%;left:10%;font-family:'IBM Plex Mono',monospace;font-size:1vw;color:#1a1714;width:28%;}
-.rf-fecha{position:absolute;top:55%;left:56%;font-family:'IBM Plex Mono',monospace;font-size:1vw;color:#1a1714;width:12%;text-align:center;}
+.rf-nombre{position:absolute;top:46%;left:10%;font-family:'Playfair Display',serif;font-size:1.4vw;color:#1a1714;width:55%;}
+.rf-id{position:absolute;top:46%;left:70%;font-family:'IBM Plex Mono',monospace;font-size:1.1vw;color:#1a1714;width:22%;text-align:center;}
+.rf-lugar{position:absolute;top:63%;left:10%;font-family:'IBM Plex Mono',monospace;font-size:1vw;color:#1a1714;width:28%;}
+.rf-fecha{position:absolute;top:63%;left:57%;font-family:'IBM Plex Mono',monospace;font-size:1vw;color:#1a1714;width:12%;text-align:center;}
+.rf-hora{position:absolute;top:63%;left:72%;font-family:'IBM Plex Mono',monospace;font-size:1vw;color:#1a1714;width:12%;text-align:center;}
 .receipt-close{position:absolute;top:10px;right:10px;background:var(--ink);color:#fff;border:none;font-size:18px;width:36px;height:36px;cursor:pointer;border-radius:50%;z-index:10;}
 .receipt-actions{position:absolute;bottom:10px;right:10px;display:flex;gap:8px;}
 .receipt-btn{background:var(--ink);color:#fff;border:none;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px 16px;cursor:pointer;transition:background .2s;}
@@ -347,6 +348,7 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
       <div class="rf-id" id="rf-id"></div>
       <div class="rf-lugar" id="rf-lugar"></div>
       <div class="rf-fecha" id="rf-fecha"></div>
+      <div class="rf-hora" id="rf-hora"></div>
     </div>
     <button class="receipt-close" onclick="closeReceipt()">✕</button>
     <div class="receipt-actions">
@@ -587,6 +589,7 @@ function openReceipt(docId){
   const dateStr=o.vel||o.createdAt?.substring(0,10)||'';
   if(dateStr){const [y,m,d]=dateStr.split('-');$('rf-fecha').textContent=`${d}/${m}/${y}`;}
   else{$('rf-fecha').textContent='';}
+  $('rf-hora').textContent=o.urgente?'URGENTE':(o.horaEntrega||'');
   $('receipt-print').classList.add('open');
 }
 function closeReceipt(){$('receipt-print').classList.remove('open');}
