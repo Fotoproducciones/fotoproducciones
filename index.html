@@ -534,7 +534,7 @@ async function saveEdit(){const o=orders.find(x=>x._docId===editId);if(!o||!o._d
 function openLb(src){$('lb-img').src=src;$('lightbox').classList.add('open');}
 
 function getReceiptImage(cid){
-  const base='https://santiagorl48.github.io/fotoproducciones/';
+  const base='https://fotoproducciones.github.io/fotoproducciones/';
   if(cid==='10010'||cid==='10011') return base+'recibo-gayosso.jpg';
   if(cid&&cid.startsWith('1002')) return base+'recibo-latinoamericana.jpg';
   if(cid&&cid.startsWith('1003')) return base+'recibo-moreh.jpg';
