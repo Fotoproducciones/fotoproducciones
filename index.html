@@ -317,7 +317,7 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono',monospace
       <select id="f-furgente" onchange="renderRows()"><option value="">Todos</option><option value="u">Urgentes</option><option value="n">Normales</option></select>
     </div>
     <div class="exp-table" id="a-table">
-      <div class="exp-head" style="grid-template-columns:32px 40px 1fr 90px 72px 72px 52px 70px"><div></div><div>Foto</div><div>Nombre del Finado</div><div>Quien solicita</div><div>H. Sol.</div><div>H. Entrega</div><div>Tipo</div><div>Estado</div></div>
+      <div class="exp-head" style="grid-template-columns:32px 40px 1fr 90px 72px 72px 52px 70px"><div></div><div>Foto</div><div>Nombre del Finado</div><div>Sucursal</div><div>H. Sol.</div><div>H. Entrega</div><div>Tipo</div><div>Estado</div></div>
       <div id="a-tbody"></div>
     </div>
     <div id="a-empty" class="empty-state" style="display:none"><div class="big">&#128194;</div><p>No hay pedidos registrados</p></div>
@@ -525,7 +525,7 @@ function renderRows(){
     <div class="chevron">&rsaquo;</div>
     <div>${o.foto?`<img src="${o.foto}" style="width:34px;height:34px;object-fit:cover;border:1px solid var(--border);">`:`<div style="width:34px;height:34px;background:var(--bg2);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink-dim);font-size:13px;">&#9675;</div>`}</div>
     <div><div class="exp-name">${o.nombre}</div><div class="exp-sub">${o.serie||'S/N'} &middot; ${o.destino||'—'}</div></div>
-    <div class="exp-sub">${o.solicitante||'—'}</div>
+    <div class="exp-sub">${o.cname||'—'}</div>
     <div class="exp-sub">${o.horaSol||'—'}</div>
     <div class="exp-sub">${o.urgente?'—':o.horaEntrega||'—'}</div>
     <div><span class="${o.urgente?'tag-u':'tag-n'}">${o.urgente?'URG':'—'}</span></div>
