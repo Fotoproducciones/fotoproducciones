@@ -498,13 +498,16 @@ function renderAdmin(){renderStats();renderCalendar();renderRows();}
 function renderStats(){const total=orders.length,pend=orders.filter(o=>!o.completado).length,urg=orders.filter(o=>o.urgente&&!o.completado).length;$('a-stats').innerHTML=`<div class="stat-box"><div class="val">${total}</div><div class="lbl">Total pedidos</div></div><div class="stat-box"><div class="val">${pend}</div><div class="lbl">Pendientes</div></div><div class="stat-box"><div class="val">${urg}</div><div class="lbl">Urgentes activos</div></div>`;}
 function filteredOrders(){
   let r=[...orders];
-  if(selectedDay){
-    r=r.filter(o=>(o.createdAt||'').substring(0,10)===selectedDay);
-  } else {
-    const weekDays=getWeekDays(weekOffset).map(d=>dStr(d));
-    r=r.filter(o=>weekDays.includes((o.createdAt||'').substring(0,10)));
-  }
   const fc=$('f-fcliente').value,fu=$('f-furgente').value;
+  // Solo filtrar por semana/día si no hay filtro de cliente activo
+  if(!fc){
+    if(selectedDay){
+      r=r.filter(o=>(o.createdAt||'').substring(0,10)===selectedDay);
+    } else {
+      const weekDays=getWeekDays(weekOffset).map(d=>dStr(d));
+      r=r.filter(o=>weekDays.includes((o.createdAt||'').substring(0,10)));
+    }
+  }
   if(fc)r=r.filter(o=>o.cid===fc);
   if(fu==='u')r=r.filter(o=>o.urgente);
   if(fu==='n')r=r.filter(o=>!o.urgente);
